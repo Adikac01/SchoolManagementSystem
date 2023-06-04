@@ -4,14 +4,12 @@ import com.example.school.Database.ObjectNotFoundException;
 import com.example.school.Database.Student.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @Controller
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping(path = "/classes")
 public class ClassController {
     @Autowired
@@ -28,11 +26,12 @@ public class ClassController {
         return classRepository.findById(classID)
                 .orElseThrow(() -> new ObjectNotFoundException(classID, type));
     }
-    @GetMapping(path = "/studentsOf/{className}")
-    public @ResponseBody Iterable<Student> getStudentsOfClass(@PathVariable String className) {
+    @GetMapping(path = "/studentsOf/{id}")
+    public @ResponseBody Iterable<Student> getStudentsOfClass(@PathVariable Integer id) {
 //        ClassDB classDB =  classRepository.findStudentsByClassName(className);
 //        return classDB.getStudentList();
-        List<ClassDB> classDB = classRepository.findByClassName(className);
-        return classDB.get(0).getStudentList();
+        ClassDB classDB = classRepository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException(id, type));
+        return classDB.getStudentList();
     }
 }
